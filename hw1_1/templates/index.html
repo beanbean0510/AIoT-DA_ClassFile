@@ -5,6 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Simple Linear Regression</title>
     <style>
+        /* Basic styling for the page */
         body { font-family: Arial, sans-serif; }
         .container { max-width: 800px; margin: 0 auto; text-align: center; }
         form { margin-bottom: 20px; }
@@ -15,38 +16,55 @@
 <body>
     <div class="container">
         <h1>Simple Linear Regression Simulator</h1>
+        
+        <!-- Form to accept user input for slope, intercept, noise, and number of points -->
         <form id="regression-form">
             <label for="a">Slope (a): </label>
             <input type="number" id="a" name="a" value="2" step="0.1"><br>
+            
             <label for="b">Intercept (b): </label>
             <input type="number" id="b" name="b" value="0" step="0.1"><br>
+            
             <label for="noise">Noise Level: </label>
             <input type="number" id="noise" name="noise" value="1" step="0.1"><br>
+            
             <label for="num_points">Number of Points: </label>
             <input type="number" id="num_points" name="num_points" value="50"><br>
+            
+            <!-- Submit button to generate the regression -->
             <button type="submit">Generate Regression</button>
         </form>
 
         <h2>Regression Result</h2>
+        
+        <!-- Section where the result will be displayed -->
         <div id="result">
+            <!-- The plot image will be displayed here -->
             <img id="plot" src="" alt="Regression plot will appear here">
+            
+            <!-- The equation of the line will be displayed here -->
             <p id="equation"></p>
         </div>
     </div>
 
     <script>
+        // Add an event listener for form submission
         document.getElementById('regression-form').addEventListener('submit', function(event) {
-            event.preventDefault();
+            event.preventDefault();  // Prevent the page from refreshing
             
-            const formData = new FormData(this);
-
+            const formData = new FormData(this);  // Collect the form data
+            
+            // Make an AJAX request to the Flask server
             fetch('/generate', {
                 method: 'POST',
                 body: formData
             })
-            .then(response => response.json())
+            .then(response => response.json())  // Parse the JSON response
             .then(data => {
+                // Set the image source to the base64-encoded image from the server
                 document.getElementById('plot').src = 'data:image/png;base64,' + data.plot_url;
+                
+                // Display the regression equation
                 document.getElementById('equation').innerText = data.equation;
             });
         });
