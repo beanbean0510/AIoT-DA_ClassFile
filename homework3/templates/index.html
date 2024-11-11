@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>SVM分類可視化比較</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            background-color: #f0f0f0;
+        }
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        label {
+            display: inline-block;
+            width: 120px;
+        }
+        .plot-container {
+            margin-top: 20px;
+        }
+        .accuracy {
+            font-size: 18px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin: 10px 0;
+        }
+        .accuracy-container {
+            display: flex;
+            justify-content: space-around;
+            margin: 20px 0;
+        }
+        button {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        button:hover {
+            background-color: #45a049;
+        }
+        .controls {
+            max-width: 500px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 style="text-align: center;">SVM分類可視化比較</h1>
+        
+        <div class="controls">
+            <form method="POST">
+                <div class="form-group">
+                    <label for="kernel">核函數：</label>
+                    <select name="kernel" id="kernel">
+                        <option value="rbf" {% if kernel == 'rbf' %}selected{% endif %}>RBF</option>
+                        <option value="linear" {% if kernel == 'linear' %}selected{% endif %}>Linear</option>
+                        <option value="poly" {% if kernel == 'poly' %}selected{% endif %}>Polynomial</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="C">正則化參數 (C)：</label>
+                    <input type="number" name="C" id="C" step="0.1" min="0.1" max="10" 
+                           value="{{ C if C else 1.0 }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="n_samples">樣本數量：</label>
+                    <input type="number" name="n_samples" id="n_samples" min="100" max="1000" 
+                           value="{{ n_samples if n_samples else 300 }}">
+                </div>
+                
+                <div class="form-group">
+                    <label for="noise">噪聲水平：</label>
+                    <input type="number" name="noise" id="noise" step="0.01" min="0" max="0.5" 
+                           value="{{ noise if noise else 0.1 }}">
+                </div>
+                
+                <button type="submit">更新模型</button>
+            </form>
+        </div>
+        
+        {% if accuracy_circle and accuracy_moon %}
+        <div class="accuracy-container">
+            <div class="accuracy">
+                圓形分布準確率：{{ accuracy_circle }}
+            </div>
+            <div class="accuracy">
+                月牙形分布準確率：{{ accuracy_moon }}
+            </div>
+        </div>
+        {% endif %}
+        
+        {% if plot %}
+        <div class="plot-container">
+            {{ plot | safe }}
+        </div>
+        {% endif %}
+    </div>
+</body>
+</html>
